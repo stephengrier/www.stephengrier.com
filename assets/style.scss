@@ -376,7 +376,7 @@ nav {
   }
 
   .read-more {
-    text-transform: uppercase;
+    text-decoration: underline;
     font-size: 15px;
   }
 }
@@ -452,6 +452,7 @@ body:after {
 .post_date{
   text-align: center;
   color: #939aa1;
+  font-size: 12px;
 }
 
 .cd-container a {
