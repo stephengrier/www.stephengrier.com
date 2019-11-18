@@ -9,7 +9,10 @@ layout: default
         <h1>{{ post.title }}</h1>
 
         <div>
-          <p class="post_date"><i class="fa fa-calendar" aria-hidden="true"></i> {{ post.date | date: "%B %e, %Y" }}</p>
+          <p class="post_date">
+            <i class="fa fa-calendar" aria-hidden="true"></i> {{ post.date | date: "%B %e, %Y" }}
+	    - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ post.content | number_of_words | divided_by:170 }} minute read
+          </p>
         </div>
       </a>
       <div class="entry">
