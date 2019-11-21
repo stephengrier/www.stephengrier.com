@@ -290,7 +290,7 @@ p > img {
   color: $darkGray;
   cursor: pointer;
   font-family: $helveticaNeue;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 28px;
   letter-spacing: 1px;
   text-align: left;
@@ -305,7 +305,7 @@ p > img {
 
 .site-description {
   margin: -5px 0 0 0;
-  color: $gray;
+  color: rgba(0,0,0,0.5);
   font-size: 16px;
 
   @include mobile {
@@ -328,9 +328,9 @@ nav {
 
   a {
     margin-left: 20px;
-    color: $darkGray;
+    color: rgba(0,0,0,0.5);
     text-align: right;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 1px;
     text-decoration: none;
 
@@ -449,7 +449,7 @@ body:after {
 
 .post_date{
   text-align: center;
-  color: #939aa1;
+  color: rgba(0,0,0,0.5);
   font-size: 12px;
   text-decoration: none;
 }
