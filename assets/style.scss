@@ -157,12 +157,13 @@ table tr td :last-child {
 }
 
 a {
-  color: $blue;
-  text-decoration: none;
-	cursor: pointer;
-  &:hover, &:active {
     color: $blue;
-  }
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: $blue;
+    text-decoration: none;
 }
 
 ul, ol {
@@ -293,6 +294,9 @@ p > img {
   font-size: 28px;
   letter-spacing: 1px;
   text-align: left;
+  a {
+    text-decoration: none;
+  }
 
   @include mobile {
     text-align: center;
@@ -328,6 +332,11 @@ nav {
     text-align: right;
     font-weight: 300;
     letter-spacing: 1px;
+    text-decoration: none;
+
+    &:hover, &:active {
+      color: $darkGray;
+    }
 
     @include mobile {
       margin: 0 10px;
@@ -374,8 +383,11 @@ nav {
   }
 
   .read-more {
-    text-decoration: underline;
     font-size: 15px;
+  }
+
+  .post-title {
+    text-decoration: none;
   }
 }
 
@@ -439,6 +451,7 @@ body:after {
   text-align: center;
   color: #939aa1;
   font-size: 12px;
+  text-decoration: none;
 }
 
 .cd-container a {
@@ -670,6 +683,7 @@ Modules - reusable parts of our design
   background-color: #4CAF50;
   border-radius: 50px;
   color: #fff;
+  text-decoration: none;
 }
 
 .pagination a, .pagination span {
