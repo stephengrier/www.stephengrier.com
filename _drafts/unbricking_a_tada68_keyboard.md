@@ -7,20 +7,21 @@ categories: [Tada68, keyboards, AVR, electronics]
 I've been using a [Tada68 mechanical
 keyboard](https://drop.com/buy/tada68-mechanical-keyboard) as my daily driver
 for the past 6 years. The keyboard is powered by an [Atmel Atmega32U4
-microprocessor](https://www.microchip.com/en-us/product/atmega32u4), and is
+microcontroller](https://www.microchip.com/en-us/product/atmega32u4), and is
 fully programmable with firmware such as
 [QMK](https://github.com/qmk/qmk_firmware).
 
 Recently, I tried to update [my
 keymap](https://github.com/stephengrier/qmk_firmware/tree/stephengrier/add_tada68_stephengrier_keymap/keyboards/tada68/keymaps/stephengrier)
-with some extra key mappings, which involves flashing the firmware onto the
-keyboard. The Tada68 shipped with the [LUFA mass storage
+with some new key mappings, which involves flashing the firmware onto the
+keyboard. The stock bootloader on the Tada68 is the [LUFA mass storage
 bootloader](https://github.com/abcminiuser/lufa/tree/master/Bootloaders/MassStorage),
-which makes it appear as a mass storage device when in bootloader mode. You
-can then copy a firmware BIN file to the storage volume, which is then flashed to the Atmel MCU. However, this bootloader is
-[known to be very prone to
-bricking](https://github.com/qmk/qmk_firmware/blob/b108524314047b947031d1cb688e2a378cf586c7/platforms/avr/bootloader.mk#L132)
-because computers often don't flush writes to the FAT filesystem before it
+which, in bootloader mode, makes it appear as a mass storage device. You can
+then copy a firmware BIN file to the storage volume, which is then flashed to
+the microcontroller's flash storage. However, this bootloader is [known to be
+very prone to
+bricking](https://github.com/qmk/qmk_firmware/blob/b108524314047b947031d1cb688e2a378cf586c7/platforms/avr/bootloader.mk#L132),
+because writes are often not flushed to the FAT filesystem correctly before it
 resets, causing the bootloader to be corrupted. Unfortunately, this happened to
 me.
 
@@ -30,16 +31,17 @@ to the Atmega32U4 MCU using the
 the Tada68. This requires special hardware, such as an ISP programmer like one
 of the many [USBasp
 clones](https://hobbycomponents.com/usb-interface/841-usbasp-avr-programmer-adaptor),
-or a device that has ISP pins on it, such as a Paspberry Pi or an Arduino board.
-Luckily, I had a [Pro Micro](https://www.sparkfun.com/products/12640) lying around, so I used that.
+or a device that has ISP pins on it, such as a Raspberry Pi or an Arduino board.
+Luckily, I had a [Pro Micro](https://www.sparkfun.com/products/12640) lying
+around, so I used that.
 
-## Flash a Pro Micro with QMK’s ISP programmer firmware
+## Flashing a Pro Micro with QMK’s ISP programmer firmware
 
 First, clone the `qmk_firmware` repo:
 
 ```bash
-git clone https://github.com/qmk/qmk_firmware.git
-cd git/qmk_firmware/
+$ git clone https://github.com/qmk/qmk_firmware.git
+$ cd git/qmk_firmware/
 ```
 
 Now, connect the Pro Micro to your computer using a USB cable, and put it into
@@ -47,7 +49,7 @@ bootloader mode by shorting the RST and GND pins, then flash the
 `pro_micro_ISP_B6_10.hex` file using `avrdude`:
 
 ```bash
-sudo avrdude -p atmega32u4 -c avr109 -P /dev/ttyACM0 -U flash:w:util/pro_micro_ISP_B6_10.hex
+$ sudo avrdude -p atmega32u4 -c avr109 -P /dev/ttyACM0 -U flash:w:util/pro_micro_ISP_B6_10.hex
 ```
 
 If successful, `/var/log/kern.log` should show something like:
@@ -67,8 +69,17 @@ Mar 31 14:53:53 seg kernel: [15186.843530] cdc_acm 4-1:1.0: ttyACM0: USB ACM dev
 You need to remove some keycaps from the Tada68 and unscrew the 6 tiny screws
 and remove the PCB and mounting plate from the case. On the underside of the
 PCB, at the bottom centre, you will see 7 small through-hole pads. 6 of these
-are the ISP connectors, with the ground connector on the bottom left, and the
-VCC (5 volt power) on the bottom right. Ignore the single connector on the left.
+are the ISP connectors, with the `Ground` connector on the bottom left, and the
+`VCC` (5 volt power) on the bottom right. Ignore the single connector on the left.
+
+```
+        RESET     SCK    MISO
+           O       O       O
+   O       O       O       O
+Unused  Ground   MOSI     VCC
+------------------------------
+```
+
 The connectors follow the 6 pin layout on this diagram:
 
 ![](/images/{{ page.id }}/isp_pin_diagram.jpg)
@@ -88,9 +99,9 @@ The cables should be connected to the following pins on the Pro Micro:
 | Pro Micro | Keyboard |
 |--------|--------|
 | VCC | VCC |
-| GND | GND |
+| GND | Ground |
 | 10 | RESET |
-| 15 | SCLK |
+| 15 | SCK |
 | 16 | MOSI |
 | 14 | MISO |
 
@@ -104,7 +115,7 @@ Connect the Pro Micro to your computer with a USB cable. Now test you can
 communicate with the Tada68 PCB over the ISP connection:
 
 ```bash
-sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -v
+$ sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -v
 ```
 
 If your setup is correct you should see output like the following:
@@ -136,9 +147,9 @@ might want to try this before trying a different bootloader.
 Clone the `rwilbur/tada68-bootloader-restore` repo and flash using `avrdude`:
 
 ```bash
-git clone https://github.com/rwilbur/tada68-bootloader-restore.git
-cd tada68-bootloader-restore/
-sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -U flash:w:mass_bootloader_tada68.hex
+$ git clone https://github.com/rwilbur/tada68-bootloader-restore.git
+$ cd tada68-bootloader-restore/
+$ sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -U flash:w:mass_bootloader_tada68.hex
 ```
 
 If successful you should see output similar to:
@@ -185,7 +196,7 @@ as a storage device.
 The LUFA mass storage bootloader is very unreliable, so you might want to
 consider flashing the Atmel DFU bootloader instead. This is a bootloader
 developed by Atmega (now called Microchip), and is generally considered to be
-the most reliable bootloader for AVR microprocessors.
+the most reliable bootloader for AVR microcontrollers.
 
 Note, there are various bootloaders available for AVR MCUs. For a description of
 these, see [QMK's flashing and bootloader information
@@ -194,14 +205,14 @@ page](https://github.com/qmk/qmk_firmware/blob/master/docs/flashing.md).
 First, download the bootloader hex files from the Microship website:
 
 ```bash
-wget https://ww1.microchip.com/downloads/en/DeviceDoc/megaUSB_DFU_Bootloaders.zip -O /tmp/megaUSB_Bootloaders.zip
-unzip /tmp/megaUSB_Bootloaders.zip
+$ wget https://ww1.microchip.com/downloads/en/DeviceDoc/megaUSB_DFU_Bootloaders.zip -O /tmp/megaUSB_Bootloaders.zip
+$ unzip /tmp/megaUSB_Bootloaders.zip
 ```
 
 Now flash using `avrdude`, being careful to flash the atmega32u4 hex file:
 
 ```bash
-sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -U flash:w:/tmp/ATMega32U4-usbdevice_dfu-1_0_0.hex
+$ sudo avrdude -p atmega32u4 -c avrisp -P /dev/ttyACM0 -U flash:w:/tmp/ATMega32U4-usbdevice_dfu-1_0_0.hex
 ```
 
 If successful, you should see output like the following:
@@ -282,10 +293,31 @@ Mar 31 23:18:26 seg kernel: [22218.679289] usb 4-1: Manufacturer: TADA
 Mar 31 23:18:26 seg kernel: [22218.814310] input: TADA TADA68 Keyboard as /devices/pci0000:00/0000:00:1a.1/usb4/4-1/4-1:1.1/0003:5441:0001.0021/input/input57
 ```
 
+## A note on fuses
+
+When changing the bootloader on AVR microcontrollers you have to be careful to
+set the
+[fuses](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/8-bit-avr/structure/fuses/)
+correctly. Fuses are registers stored in non-volatile memory that determine the
+hardware configuration of an AVR microcontroller, like whether it has a
+bootloader, what speed and voltage it will runs at etc. Setting the fuses
+incorrectly can result in bricking the controller, which can only be recovered
+using high voltage programming.
+
+The fuse values (usually high, low and extended) are visible in the output of
+the `avrdude` command. For example, with the stock mass storage bootloader on
+the Tada68, the fuses are `(E:F3, H:99, L:5E)`. Luckily, the fuses needed for
+the atmel-dfu bootloader are exactly the same as for the mass storage
+bootloader, so I didn't need to change these. However, if you decide to choose a
+different bootloader you should check what fuses are required for it on the [QMK
+ISP flashing
+guide](https://docs.qmk.fm/#/isp_flashing_guide?id=bootloader-firmware). If they
+need to be changed you can set them with the `avrdude` command.
+
 ## References and credits
 
 1. [How to un-brick Tada68 with Raspberry Pi Reddit post](https://www.reddit.com/r/MechanicalKeyboards/comments/fu7rc0/how_to_unbrick_tada68_with_raspberry_pi/)
-1. [Tada68-bootloader-restore GitHub repo](https://github.com/rwilbur/tada68-bootloader-restore)
+1. [rwilbur's Tada68-bootloader-restore GitHub repo](https://github.com/rwilbur/tada68-bootloader-restore)
 1. [Installing or unbricking a custom TADA68 bootloader using a Raspberry Pi](https://web.archive.org/web/20170714075038/http://maartendekkers.com/tada68/)
 1. [Bricked TADA68 and How I Fixed it - A Novice's Tale](https://www.reddit.com/r/MechanicalKeyboards/comments/66sji0/bricked_tada68_and_how_i_fixed_it_a_novices_tale/)
 1. [An example USBasp ISP programmer for sale on Ebay](https://www.ebay.co.uk/itm/254302763448)
