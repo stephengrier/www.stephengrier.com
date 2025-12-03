@@ -109,7 +109,7 @@ Tvheadend will create to a user that exists on the host. Create the user like
 so:
 
 ```shell
-sudo useradd -d /home/iptv -s /bin/bash -u 1001 -U iptv
+sudo useradd -d /home/iptv -s /usr/sbin/nologin -u 1001 -U iptv
 echo "iptv:iptv" | sudo chpasswd
 ```
 
@@ -295,12 +295,12 @@ transmitters close to your location. This will show the coverage from each
 transmitter. Pick the one that provides the best coverage for your location.
 This is not always your nearest transmitter.
 
-In my case I get the best signal from the Chrystal Palance transmitter, so I
+In my case I get the best signal from the Crystal Palace transmitter, so I
 select `United Kingdom: uk-CrystalPalace` from the pre-defined muxes list.
 
 The `ukfree.tv` website also provides details on the frequencies broadcast by
 each transmitter and the services (or channels) multiplexed on each one. For
-example, the details for the Chrystal Palace transmitter can be seen
+example, the details for the Crystal Palace transmitter can be seen
 [here](https://ukfree.tv/transmitters/tv/Crystal_Palace).
 
 ![](/images/{{ page.id }}/tvheadend-network.png)
@@ -431,5 +431,5 @@ connect two or three of them to a Raspberry Pi.
 # References and credits
 
 1. [How to set up Tvheadend with your DVB-T2 receiver](https://www.linuxserver.io/blog/2017-02-19-how-to-set-up-tvheadend-with-your-dvb-t2-receiver)
-1. [UKFree.tv details about Chrystal Palace transmitter](https://ukfree.tv/transmitters/tv/Crystal_Palace)
+1. [UKFree.tv details about Crystal Palace transmitter](https://ukfree.tv/transmitters/tv/Crystal_Palace)
 1. [Watch TV ANYWHERE in your house using IPTV via a RASPBERRY PI and TVHEADEND youtube video](https://www.youtube.com/watch?v=JFnCecQllCc)
