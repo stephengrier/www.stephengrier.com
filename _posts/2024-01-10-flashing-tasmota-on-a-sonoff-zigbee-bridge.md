@@ -191,6 +191,14 @@ File System:
 
 ![](/images/{{ page.id }}/tasmota-file-system.png)
 
+> #### Note for Tasmota 15
+> The coordinator firmware bundled with the tasmota32-zbbrdgpro.factory.bin
+image of Tasmota 15 is outdated and will cause errors during flashing. Instead of
+using the included 20220219 version, download the updated firmware from
+[SonoffZBPro_coord_20240710.hex](https://github.com/arendst/Tasmota/blob/v15.0.1/tools/fw_SonoffZigbeeBridgePro_cc2652/SonoffZBPro_coord_20240710.hex)
+and upload the file via the Manage File System function. Once uploaded, continue
+with the steps below using the newly updated firmware.
+
 The flashing procedure is carried out from the `Berry Scripting` console. Go to
 Consoles -> Berry Scripting.
 
